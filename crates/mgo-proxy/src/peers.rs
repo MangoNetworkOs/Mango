@@ -1,4 +1,4 @@
-// Copyright (c) MangoNet Labs, Inc.
+// Copyright (c) MangoNet Labs Ltd.
 // SPDX-License-Identifier: Apache-2.0
 use anyhow::{bail, Context, Result};
 use fastcrypto::ed25519::Ed25519PublicKey;
@@ -100,7 +100,7 @@ impl MgoNodeProvider {
 
     /// get_validators will retrieve known validators
     async fn get_validators(url: String) -> Result<MgoSystemStateSummary> {
-        let rpc_method = "mgo_getLatestMgoSystemState";
+        let rpc_method = "mgox_getLatestMgoSystemState";
         let observe = || {
             let timer = JSON_RPC_DURATION
                 .with_label_values(&[rpc_method])

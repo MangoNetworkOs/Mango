@@ -1,30 +1,6 @@
 CREATE MATERIALIZED VIEW epoch_network_metrics as
-WITH checkpoints_30d AS (
-  SELECT
-    MAX(sequence_number) AS sequence_number,
-    SUM(total_successful_transactions) AS total_successful_transactions,
-    timestamp_ms
-  FROM
-    checkpoints
-  WHERE
-    timestamp_ms > EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - INTERVAL '30 days')) * 1000
-  GROUP BY
-    timestamp_ms
-),
-tps_data AS (
-  SELECT
-    sequence_number,
-    total_successful_transactions,
-    LAG(timestamp_ms) OVER (ORDER BY timestamp_ms DESC) - timestamp_ms AS time_diff
-  FROM 
-    checkpoints_30d
-)
-SELECT 
-  MAX(total_successful_transactions * 1000.0 / time_diff)::float8 as tps_30_days
-FROM 
-  tps_data
-WHERE 
-  time_diff IS NOT NULL;
+SELECT
+    peak_tps_30d as tps_30_days FROM checkpoint_metrics ORDER BY checkpoint DESC Limit 1;
 CREATE UNIQUE INDEX epoch_network_metrics_tps ON epoch_network_metrics(tps_30_days);
 
 CREATE TABLE epochs
